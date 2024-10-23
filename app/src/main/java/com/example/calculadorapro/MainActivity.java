@@ -19,22 +19,17 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
 
-
-    private TextView screen;
-    private boolean lastNumeric;
-    private boolean stateError;
-    private boolean lastDot;
-
+    Double firstnum;
+    String operation;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        screen = findViewById(R.id.screen);
-
-        // Number buttons
         Button num0 = findViewById(R.id.num0);
         Button num1 = findViewById(R.id.num1);
         Button num2 = findViewById(R.id.num2);
@@ -45,92 +40,124 @@ public class MainActivity extends AppCompatActivity {
         Button num7 = findViewById(R.id.num7);
         Button num8 = findViewById(R.id.num8);
         Button num9 = findViewById(R.id.num9);
-        Button numDot = findViewById(R.id.num);
 
-        // Operator buttons
-        Button on = findViewById(R.id.on);
-        Button off = findViewById(R.id.OFF);
-        Button ac = findViewById(R.id.AC);
-        Button del = findViewById(R.id.DEL);
         Button plus = findViewById(R.id.plus);
         Button minus = findViewById(R.id.minus);
-        Button multiply = findViewById(R.id.x);
-        Button divide = findViewById(R.id.diagonal);
-        Button equal = findViewById(R.id.igual);
+        Button diagonal = findViewById(R.id.diagonal);
+        Button x = findViewById(R.id.x);
+        Button igual = findViewById(R.id.igual);
+        Button puntito = findViewById(R.id.puntito);
+        Button AC = findViewById(R.id.AC);
+        Button DEL = findViewById(R.id.DEL);
+        Button OFF = findViewById(R.id.OFF);
+        Button ON = findViewById(R.id.ON);
 
-        // Set click listeners for number buttons
-        View.OnClickListener numberClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onDigit(((Button) v).getText().toString());
+        TextView screen = findViewById(R.id.screen);
+
+
+        AC.setOnClickListener(view ->
+                {
+                    screen.setText("0");
+                    firstnum = 0.0;
+
+                }
+
+                );
+        OFF.setOnClickListener(view -> screen.setVisibility(View.GONE));
+        ON.setOnClickListener(view -> {
+
+            screen.setVisibility(View.VISIBLE);
+            screen.setText("0");
+                }
+
+        );
+    ArrayList<Button> nums = new ArrayList<>();
+    nums.add(num0);
+    nums.add(num1);
+    nums.add(num2);
+    nums.add(num3);
+    nums.add(num4);
+    nums.add(num5);
+    nums.add(num6);
+    nums.add(num7);
+    nums.add(num8);
+    nums.add(num9);
+    for(Button b : nums)
+    {
+        b.setOnClickListener(view -> {
+            if(!screen.getText().toString().equals("0"))
+            {
+
+                screen.setText(screen.getText().toString() + b.getText().toString());
             }
-        };
-        num0.setOnClickListener(numberClickListener);
-        num1.setOnClickListener(numberClickListener);
-        num2.setOnClickListener(numberClickListener);
-        num3.setOnClickListener(numberClickListener);
-        num4.setOnClickListener(numberClickListener);
-        num5.setOnClickListener(numberClickListener);
-        num6.setOnClickListener(numberClickListener);
-        num7.setOnClickListener(numberClickListener);
-        num8.setOnClickListener(numberClickListener);
-        num9.setOnClickListener(numberClickListener);
+            else{
+                screen.setText(b.getText().toString());
+            }
+
+        });
 
 
-        // Set click listeners for operator buttons
-        on.setOnClickListener(v -> onEqual());
-        off.setOnClickListener(v -> onEqual());
-        ac.setOnClickListener(v -> onEqual());
-        del.setOnClickListener(v -> onEqual());
-        plus.setOnClickListener(v -> onOperator("+"));
-        minus.setOnClickListener(v -> onOperator("-"));
-        multiply.setOnClickListener(v -> onOperator("*"));
-        divide.setOnClickListener(v -> onOperator("/"));
-        equal.setOnClickListener(v -> onEqual());
-        numDot.setOnClickListener(v -> onDecimalPoint());
     }
 
-    private void onDigit(String digit) {
-        if (stateError) {
-            screen.setText(digit);
-            stateError = false;
+
+
+    ArrayList<Button> ops = new ArrayList<>();
+    ops.add(plus);
+    ops.add(minus);
+    ops.add(diagonal);
+    ops.add(x);
+    ops.add(igual);
+    ops.add(puntito);
+    ops.add(AC);
+    ops.add(DEL);
+    for (Button b : ops) {
+        b.setOnClickListener(view -> {
+        firstnum = Double.parseDouble(screen.getText().toString());
+        operation = b.getText().toString();
+        screen.setText("0");
+
+        });
+    }
+    DEL.setOnClickListener(view -> {
+        String num = screen.getText().toString();
+        if (num.length() > 1) {
+            screen.setText(num.substring(0, num.length() - 1));
         } else {
-            screen.append(digit);
+            screen.setText("0");
         }
-
-        lastNumeric = true;
-    }
-
-    private void onOperator(String operator) {
-        if (lastNumeric && !stateError) {
-            screen.append(operator);
-            lastNumeric = false;
-            lastDot = false;    // Reset the DOT flag
+    });
+    puntito.setOnClickListener(view -> {
+        if(!screen.getText().toString().contains("."))
+        {
+            screen.setText(screen.getText().toString() + ".");
         }
-    }
-
-    private void onDecimalPoint() {
-        if (lastNumeric && !stateError && !lastDot) {
-            screen.append(".");
-            lastNumeric = false;
-            lastDot = true;
+    });
+    igual.setOnClickListener(view -> {
+        Double secondnum = Double.parseDouble(screen.getText().toString());
+        double result;
+        switch(operation) {
+            case "/":
+                result= firstnum/secondnum;
+                break;
+            case "X":
+                result= firstnum*secondnum;
+                break;
+            case "-":
+                result= firstnum-secondnum;
+                break;
+            case "+":
+                result= firstnum+secondnum;
+                break;
+            default:
+                result= firstnum+secondnum;
+                break;
         }
-    }
+        screen.setText(String.valueOf(result));
+        firstnum = result;
+    });
 
-    private void onEqual() {
-        if (lastNumeric && !stateError) {
-            String txt = screen.getText().toString();
-            kotlin.reflect.jvm.internal.impl.metadata.ProtoBuf.Expression expression = new ExpressionBuilder(txt).build();
-            try {
-                double result = expression.evaluate();
-                screen.setText(Double.toString(result));
-                lastDot = true;
-            } catch (ArithmeticException ex) {
-                screen.setText("Error");
-                stateError = true;
-                lastNumeric = false;
-            }
-        }
+
+
+
     }
-}
 }

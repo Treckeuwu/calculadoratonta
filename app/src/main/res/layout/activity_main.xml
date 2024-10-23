@@ -27,10 +27,10 @@
         android:id="@+id/nums"
 
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:orientation="horizontal"
-        android:paddingTop="200dp">
+        android:paddingTop="20dp">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -38,7 +38,7 @@
         android:orientation="vertical">
         
         <Button
-            android:id="@+id/on"
+            android:id="@+id/ON"
             android:text="ON"
             style="@style/Button1"
 
@@ -137,7 +137,7 @@
 
                 />
             <Button
-                android:id="@+id/num."
+                android:id="@+id/puntito"
                 android:text="."
                 style="@style/Button2"
 
